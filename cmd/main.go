@@ -1,16 +1,21 @@
-package cmd
+package main
 
-import "os"
-
-const (
-	ServerAddressEnv = "SERVER_ADDRESS"
+import (
+	"github.com/DanKo-code/TODO-list/internal/server"
+	"github.com/DanKo-code/TODO-list/pkg/logger"
+	"os"
 )
 
 func main() {
-	app := server.NewApp()
 
-	if err := app.Run(os.Getenv("APP_PORT")); err != nil {
-		logrusCustom.Logger.Fatalf("Error when running server: %s", err.Error())
-
+	app, err := server.NewApp(os.Getenv("APP_ADDRESS"), os.Getenv("DB_DRIVER"), os.Getenv("DB_NAME"))
+	if err != nil {
+		logger.FatalLogger.Fatal("Failed to initialize app")
 	}
+
+	if err := app.Run(); err != nil {
+		logger.FatalLogger.Fatal("Server Shutdown Failed:%+v", err)
+	}
+
+	logger.InfoLogger.Println("Server Shutdown Success")
 }
