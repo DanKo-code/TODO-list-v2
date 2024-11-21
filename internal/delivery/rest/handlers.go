@@ -6,6 +6,10 @@ import (
 	"net/http"
 )
 
+var (
+	NoBody = "EOF"
+)
+
 type Handlers struct {
 	useCase usecase.TaskUseCase
 }
@@ -20,6 +24,12 @@ func (h *Handlers) CreateTask(w http.ResponseWriter, r *http.Request) {
 	cmd := dtos.CreateTaskCommand{}
 	err := ReadFromRequestBody(r, &cmd)
 	if err != nil {
+
+		if err.Error() == NoBody {
+			WriteErrToResponseBody(w, NoParamsToCreate, http.StatusNotFound)
+			return
+		}
+
 		WriteErrToResponseBody(w, err, http.StatusBadRequest)
 		return
 	}
@@ -32,8 +42,58 @@ func (h *Handlers) CreateTask(w http.ResponseWriter, r *http.Request) {
 
 	task, err := h.useCase.CreateTask(ctx, &cmd)
 	if err != nil {
-
+		WriteErrToResponseBody(w, err, http.StatusInternalServerError)
+		return
 	}
 
 	WriteToResponseBody(w, task)
+}
+
+func (h *Handlers) GetTasks(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	tasks, err := h.useCase.GetTasks(ctx)
+	if err != nil {
+		WriteErrToResponseBody(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	WriteToResponseBody(w, tasks)
+}
+
+func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	taskId, ok := ctx.Value("id").(string)
+	if !ok || !isValidUUID(taskId) {
+		WriteErrToResponseBody(w, InvalidIdFormat, http.StatusBadRequest)
+		return
+	}
+
+	cmd := dtos.UpdateTaskCommand{}
+	err := ReadFromRequestBody(r, &cmd)
+	if err != nil {
+
+		if err.Error() == NoBody {
+			WriteErrToResponseBody(w, NoParamsToUpdate, http.StatusNotFound)
+			return
+		}
+
+		WriteErrToResponseBody(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = cmd.Validate()
+	if err != nil {
+		WriteErrToResponseBody(w, err, http.StatusBadRequest)
+		return
+	}
+
+	utask, err := h.useCase.UpdateTask(ctx, taskId, &cmd)
+	if err != nil {
+		WriteErrToResponseBody(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	WriteToResponseBody(w, utask)
 }

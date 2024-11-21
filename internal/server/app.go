@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/DanKo-code/TODO-list/internal/delivery/rest"
 	"github.com/DanKo-code/TODO-list/internal/repository"
 	sqliteRep "github.com/DanKo-code/TODO-list/internal/repository/sqlite"
@@ -57,7 +56,7 @@ func (a *App) Run() error {
 		}
 	}()
 
-	logger.InfoLogger.Println(fmt.Sprintf("Server started on address %s", a.server.Addr))
+	logger.InfoLogger.Printf("Server started on address %s", a.server.Addr)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)

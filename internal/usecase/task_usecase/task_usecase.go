@@ -43,3 +43,57 @@ func (tuc *TaskUseCase) CreateTask(ctx context.Context, cmd *dtos.CreateTaskComm
 
 	return task, nil
 }
+
+func (tuc *TaskUseCase) GetTasks(ctx context.Context) ([]*models.Task, error) {
+
+	tasks, err := tuc.taskRep.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}
+
+func (tuc *TaskUseCase) UpdateTask(ctx context.Context, id string, updateTaskCommand *dtos.UpdateTaskCommand) (*models.Task, error) {
+
+	task, err := tuc.taskRep.GetById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = tuc.taskRep.Update(ctx, id, updateTaskCommand)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedTask := createUpdateTaskRes(task, updateTaskCommand)
+
+	return updatedTask, nil
+}
+
+func createUpdateTaskRes(task *models.Task, updateTaskCommand *dtos.UpdateTaskCommand) *models.Task {
+	updatedTask := &models.Task{
+		Id:        task.Id,
+		Overdue:   task.Overdue,
+		Completed: task.Completed,
+	}
+	if updateTaskCommand.Title == "" {
+		updatedTask.Title = task.Title
+	} else {
+		updatedTask.Title = updateTaskCommand.Title
+	}
+
+	if updateTaskCommand.Description == "" {
+		updatedTask.Description = task.Description
+	} else {
+		updatedTask.Description = updateTaskCommand.Description
+	}
+
+	if updateTaskCommand.DueDate == "" {
+		updatedTask.DueDate = task.DueDate
+	} else {
+		updatedTask.DueDate = updateTaskCommand.DueDate
+	}
+
+	return updatedTask
+}
