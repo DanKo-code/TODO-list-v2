@@ -60,6 +60,11 @@ func (h *Handlers) GetTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if tasks == nil {
+		WriteToResponseBody(w, []struct{}{})
+		return
+	}
+
 	WriteToResponseBody(w, tasks)
 }
 
