@@ -14,4 +14,5 @@ type TaskRepository interface {
 	Update(ctx context.Context, id string, updateTaskCommand *dtos.UpdateTaskCommand) error
 	DeleteById(ctx context.Context, id string) error
 	ChangeCompletionStatus(ctx context.Context, id string, completionStatus bool) error
+	UpdateOverdueTasks(ctx context.Context) error
 }

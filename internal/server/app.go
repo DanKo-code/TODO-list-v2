@@ -3,6 +3,8 @@ package server
 import (
 	"context"
 	"errors"
+	"github.com/DanKo-code/TODO-list/internal/background"
+	"github.com/DanKo-code/TODO-list/internal/background/task_background"
 	"github.com/DanKo-code/TODO-list/internal/delivery/rest"
 	"github.com/DanKo-code/TODO-list/internal/repository"
 	sqliteRep "github.com/DanKo-code/TODO-list/internal/repository/sqlite"
@@ -15,9 +17,14 @@ import (
 	"time"
 )
 
+var (
+	interval = 1 * time.Minute / 3
+)
+
 type App struct {
 	server *http.Server
 	tRep   repository.TaskRepository
+	tc     background.TaskChecker
 }
 
 func NewApp(appAddress, driver, dsn string) (*App, error) {
@@ -42,13 +49,26 @@ func NewApp(appAddress, driver, dsn string) (*App, error) {
 		Handler: router,
 	}
 
+	tc := task_background.NewTaskChecker(taskUseCase)
+
 	return &App{
 		server: server,
 		tRep:   tRep,
+		tc:     tc,
 	}, nil
 }
 
 func (a *App) Run() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer func() {
+		a.tRep.Close()
+		cancel()
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+
+	stopChecker := make(chan struct{})
 
 	go func() {
 		if err := a.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -58,17 +78,11 @@ func (a *App) Run() error {
 
 	logger.InfoLogger.Printf("Server started on address %s", a.server.Addr)
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt)
+	go a.tc.StartOverdueStatusChecker(context.TODO(), interval, stopChecker)
 
 	<-quit
-	logger.InfoLogger.Println("Server stopped")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer func() {
-		a.tRep.Close()
-		cancel()
-	}()
+	close(stopChecker)
 
 	return a.server.Shutdown(ctx)
 }

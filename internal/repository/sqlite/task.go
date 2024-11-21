@@ -204,3 +204,16 @@ func (s *TaskRepository) ChangeCompletionStatus(ctx context.Context, id string, 
 
 	return nil
 }
+
+func (s *TaskRepository) UpdateOverdueTasks(ctx context.Context) error {
+	q := `UPDATE tasks 
+		  SET overdue = TRUE 
+		  WHERE due_date <= DATE('now') AND overdue = FALSE`
+
+	_, err := s.db.ExecContext(ctx, q)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

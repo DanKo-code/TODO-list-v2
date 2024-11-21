@@ -12,4 +12,5 @@ type TaskUseCase interface {
 	UpdateTask(ctx context.Context, id string, updateTaskCommand *dtos.UpdateTaskCommand) (*models.Task, error)
 	DeleteTask(ctx context.Context, id string) error
 	ChangeTaskCompletionStatus(ctx context.Context, id string, completionStatus bool) (*models.Task, error)
+	UpdateOverdueTasks(ctx context.Context) error
 }

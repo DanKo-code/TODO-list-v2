@@ -128,3 +128,12 @@ func (tuc *TaskUseCase) ChangeTaskCompletionStatus(ctx context.Context, id strin
 
 	return task, nil
 }
+
+func (tuc *TaskUseCase) UpdateOverdueTasks(ctx context.Context) error {
+	err := tuc.taskRep.UpdateOverdueTasks(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

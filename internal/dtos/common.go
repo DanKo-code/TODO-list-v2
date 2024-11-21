@@ -10,5 +10,5 @@ func isValidDate(date string) bool {
 
 	today := time.Now().Truncate(24 * time.Hour)
 
-	return parsedDate.After(today)
+	return !parsedDate.Before(today)
 }
