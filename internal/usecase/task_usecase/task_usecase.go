@@ -97,3 +97,34 @@ func createUpdateTaskRes(task *models.Task, updateTaskCommand *dtos.UpdateTaskCo
 
 	return updatedTask
 }
+
+func (tuc *TaskUseCase) DeleteTask(ctx context.Context, id string) error {
+
+	_, err := tuc.taskRep.GetById(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	err = tuc.taskRep.DeleteById(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (tuc *TaskUseCase) ChangeTaskCompletionStatus(ctx context.Context, id string, completionStatus bool) (*models.Task, error) {
+	task, err := tuc.taskRep.GetById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = tuc.taskRep.ChangeCompletionStatus(ctx, id, completionStatus)
+	if err != nil {
+		return nil, err
+	}
+
+	task.Completed = completionStatus
+
+	return task, nil
+}

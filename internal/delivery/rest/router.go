@@ -18,6 +18,8 @@ func NewRouter(handlers *Handlers) *Router {
 	router.addRoute("POST", "/tasks", handlers.CreateTask)
 	router.addRoute("GET", "/tasks", handlers.GetTasks)
 	router.addRoute("PUT", "/tasks/{id}", handlers.UpdateTask)
+	router.addRoute("DELETE", "/tasks/{id}", handlers.DeleteTask)
+	router.addRoute("PATCH", "/tasks/{id}/complete", handlers.ChangeTaskCompletionStatus)
 
 	return router
 }

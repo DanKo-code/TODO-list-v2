@@ -12,7 +12,6 @@ type TaskRepository interface {
 	GetAll(ctx context.Context) ([]*models.Task, error)
 	GetById(ctx context.Context, id string) (*models.Task, error)
 	Update(ctx context.Context, id string, updateTaskCommand *dtos.UpdateTaskCommand) error
-	/*DeleteById(ctx context.Context, id string) (*models.Task, error)
-	MarkAsCompleted(ctx context.Context, id string) (*models.Task, error)*/
-
+	DeleteById(ctx context.Context, id string) error
+	ChangeCompletionStatus(ctx context.Context, id string, completionStatus bool) error
 }

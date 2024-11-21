@@ -180,3 +180,27 @@ func (s *TaskRepository) Update(ctx context.Context, id string, updateTaskComman
 
 	return nil
 }
+
+func (s *TaskRepository) DeleteById(ctx context.Context, id string) error {
+	q := `DELETE FROM tasks WHERE id = $1`
+
+	_, err := s.db.ExecContext(ctx, q, id)
+	if err != nil {
+		logger.ErrorLogger.Printf("failed to delete task: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func (s *TaskRepository) ChangeCompletionStatus(ctx context.Context, id string, completionStatus bool) error {
+	q := `UPDATE tasks SET completed = $1 WHERE id = $2`
+
+	_, err := s.db.ExecContext(ctx, q, completionStatus, id)
+	if err != nil {
+		logger.ErrorLogger.Printf("failed to change completion status: %v", err)
+		return err
+	}
+
+	return nil
+}
