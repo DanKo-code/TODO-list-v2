@@ -93,6 +93,7 @@ func createUpdateTaskRes(task *models.Task, updateTaskCommand *dtos.UpdateTaskCo
 		updatedTask.DueDate = task.DueDate
 	} else {
 		updatedTask.DueDate = updateTaskCommand.DueDate
+		updatedTask.Overdue = false
 	}
 
 	return updatedTask

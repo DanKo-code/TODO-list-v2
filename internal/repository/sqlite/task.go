@@ -161,6 +161,9 @@ func (s *TaskRepository) Update(ctx context.Context, id string, updateTaskComman
 	if updateTaskCommand.DueDate != "" {
 		setClauses = append(setClauses, "due_date = ?")
 		args = append(args, updateTaskCommand.DueDate)
+
+		setClauses = append(setClauses, "overdue = ?")
+		args = append(args, false)
 	}
 
 	if len(setClauses) == 0 {

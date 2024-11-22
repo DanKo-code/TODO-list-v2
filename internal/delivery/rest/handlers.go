@@ -156,7 +156,13 @@ func (h *Handlers) ChangeTaskCompletionStatus(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	updatedTask, err := h.useCase.ChangeTaskCompletionStatus(ctx, taskId, cmd.Completed)
+	err = cmd.Validate()
+	if err != nil {
+		WriteErrToResponseBody(w, err, http.StatusBadRequest)
+		return
+	}
+
+	updatedTask, err := h.useCase.ChangeTaskCompletionStatus(ctx, taskId, *cmd.Completed)
 	if err != nil {
 
 		if errors.Is(err, internalErrors.TaskNotFound) {
