@@ -15,11 +15,11 @@ func NewRouter(handlers *Handlers) *Router {
 		routes: make(map[string]map[string]http.HandlerFunc),
 	}
 
-	router.addRoute("POST", "/tasks", handlers.CreateTask)
-	router.addRoute("GET", "/tasks", handlers.GetTasks)
-	router.addRoute("PUT", "/tasks/{id}", handlers.UpdateTask)
-	router.addRoute("DELETE", "/tasks/{id}", handlers.DeleteTask)
-	router.addRoute("PATCH", "/tasks/{id}/complete", handlers.ChangeTaskCompletionStatus)
+	router.addRoute(http.MethodPost, "/tasks", handlers.CreateTask)
+	router.addRoute(http.MethodGet, "/tasks", handlers.GetTasks)
+	router.addRoute(http.MethodPut, "/tasks/{id}", handlers.UpdateTask)
+	router.addRoute(http.MethodDelete, "/tasks/{id}", handlers.DeleteTask)
+	router.addRoute(http.MethodPatch, "/tasks/{id}/complete", handlers.ChangeTaskCompletionStatus)
 
 	return router
 }

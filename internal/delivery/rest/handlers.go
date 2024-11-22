@@ -28,7 +28,7 @@ func (h *Handlers) CreateTask(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 
 		if err.Error() == NoBody {
-			WriteErrToResponseBody(w, NoParamsToCreate, http.StatusNotFound)
+			WriteErrToResponseBody(w, NoParamsToCreate, http.StatusBadRequest)
 			return
 		}
 
