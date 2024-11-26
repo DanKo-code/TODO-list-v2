@@ -8,6 +8,8 @@ import (
 
 func main() {
 
+	//Test workflows
+
 	app, err := server.NewApp(os.Getenv("APP_ADDRESS"), os.Getenv("DB_DRIVER"), os.Getenv("DB_NAME"))
 	if err != nil {
 		logger.FatalLogger.Fatal("Failed to initialize app")
