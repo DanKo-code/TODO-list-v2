@@ -1,3 +1,4 @@
 ﻿.idea
 .env
 db/todo_list.db
+*.db
