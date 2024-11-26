@@ -159,7 +159,7 @@ func TestUpdateTaskHandler(t *testing.T) {
 		{
 			name:        "success",
 			id:          "a495465c-d177-48e1-8954-516bba76d541",
-			requestBody: `{"title":"Test Task","description":"This is a test task","due_date":"2024-11-22"}`,
+			requestBody: `{"title":"Test Task","description":"This is a test task","due_date":"2024-11-28"}`,
 			mockUpdateTaskFunc: func(ctx context.Context, id string, updateTaskCommand *dtos.UpdateTaskCommand) (*models.Task, error) {
 				return &models.Task{
 					Id:          "a495465c-d177-48e1-8954-516bba76d541",
@@ -176,7 +176,7 @@ func TestUpdateTaskHandler(t *testing.T) {
 		{
 			name:        "invalid id format",
 			id:          "1",
-			requestBody: `{"title":"Test Task","description":"This is a test task","due_date":"2024-11-22"}`,
+			requestBody: `{"title":"Test Task","description":"This is a test task","due_date":"2024-11-28"}`,
 			mockUpdateTaskFunc: func(ctx context.Context, id string, updateTaskCommand *dtos.UpdateTaskCommand) (*models.Task, error) {
 				return &models.Task{
 					Id:          "a495465c-d177-48e1-8954-516bba76d541",
