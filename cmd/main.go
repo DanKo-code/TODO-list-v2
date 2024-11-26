@@ -16,7 +16,7 @@ func main() {
 	}
 
 	if err := app.Run(); err != nil {
-		logger.FatalLogger.Fatal("Server Shutdown Failed:%+v", err)
+		logger.FatalLogger.Fatalf("Server Shutdown Failed:%+v", err)
 	}
 
 	logger.InfoLogger.Println("Server Shutdown Success")

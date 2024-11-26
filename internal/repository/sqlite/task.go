@@ -41,7 +41,7 @@ func (s *TaskRepository) Init(ctx context.Context) error {
 
 	_, err := s.db.ExecContext(ctx, q)
 	if err != nil {
-		logger.ErrorLogger.Println("Failed to init db: %v", err)
+		logger.ErrorLogger.Printf("Failed to init db: %v", err)
 		return err
 	}
 
@@ -52,7 +52,7 @@ func (s *TaskRepository) Init(ctx context.Context) error {
 
 func (s *TaskRepository) Close() {
 	if err := s.db.Close(); err != nil {
-		logger.ErrorLogger.Println("Failed to close db connection: %v", err)
+		logger.ErrorLogger.Printf("Failed to close db connection: %v", err)
 	} else {
 		logger.InfoLogger.Println("Database connection closed")
 	}
